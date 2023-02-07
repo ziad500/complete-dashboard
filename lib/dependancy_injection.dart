@@ -7,6 +7,7 @@ import 'package:dashboard/features/category/domain/usecases/add_category_usecase
 import 'package:dashboard/features/category/domain/usecases/delete_category_usecase.dart';
 import 'package:dashboard/features/category/domain/usecases/delete_product_usecase.dart';
 import 'package:dashboard/features/category/domain/usecases/get_category_usecase.dart';
+import 'package:dashboard/features/category/domain/usecases/get_next_products_usecase.dart';
 import 'package:dashboard/features/category/presentation/category_screen/cubit/category_screen_cubit.dart';
 import 'package:dashboard/features/dashboard_screen/data/remote/dashboard_remote_data_source.dart';
 import 'package:dashboard/features/dashboard_screen/data/remote/dashboard_remote_data_source_impl.dart';
@@ -35,7 +36,8 @@ Future<void> init() async {
       getCategoryUseCase: sl.call(),
       deleteCategoryUseCase: sl.call(),
       getProductUseCase: sl.call(),
-      deleteProductUseCase: sl.call()));
+      deleteProductUseCase: sl.call(),
+      getNextProductsUseCase: sl.call()));
 
   sl.registerFactory<MainScreenCubit>(() => MainScreenCubit(sl.call()));
 
@@ -60,6 +62,9 @@ Future<void> init() async {
 
   sl.registerLazySingleton<DeleteProductUseCase>(
       () => DeleteProductUseCase(sl.call()));
+
+  sl.registerLazySingleton<GetNextProductsUseCase>(
+      () => GetNextProductsUseCase(repository: sl.call()));
 
   //repository
   sl.registerLazySingleton<CategoryRepository>(

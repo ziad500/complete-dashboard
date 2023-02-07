@@ -1,3 +1,4 @@
+import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
 import 'package:dashboard/features/category/data/remote/data_source/category_remote_data_source.dart';
 import 'package:dashboard/features/category/domain/model/category_entity.dart';
 import 'package:dashboard/features/category/domain/repository/category_repo.dart';
@@ -25,4 +26,8 @@ class CategoryRepositoryImpl implements CategoryRepository {
   @override
   Future<void> deleteProduct(String productId) =>
       remoteDataSource.deleteProduct(productId);
+
+  @override
+  Stream<List<ProductEntity>> getNextProductList(Timestamp date) =>
+      remoteDataSource.getNextProductList(date);
 }

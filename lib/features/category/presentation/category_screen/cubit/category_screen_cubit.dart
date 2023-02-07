@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dashboard/features/category/domain/model/category_entity.dart';
 import 'package:dashboard/features/category/domain/usecases/add_category_usecase.dart';
 import 'package:dashboard/features/category/domain/usecases/delete_product_usecase.dart';
+import 'package:dashboard/features/category/domain/usecases/get_next_products_usecase.dart';
 import 'package:dashboard/features/category/domain/usecases/get_product_usecase.dart';
 import 'package:dashboard/features/main_screen/presentation/cubit/main_screen_cubit.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +21,13 @@ class CategoryScreenCubit extends Cubit<CategoryScreenState> {
       required this.addCategoryUseCase,
       required this.deleteCategoryUseCase,
       required this.getProductUseCase,
+      required this.getNextProductsUseCase,
       required this.deleteProductUseCase})
       : super(CategoryScreenInitial());
   // BlocProvider.of<CategoryScreenCubit>(context)
   final AddCategoryUseCase addCategoryUseCase;
   final GetCategoryUseCase getCategoryUseCase;
+  final GetNextProductsUseCase getNextProductsUseCase;
   final DeleteCategoryUseCase deleteCategoryUseCase;
   final GetProductUseCase getProductUseCase;
   final DeleteProductUseCase deleteProductUseCase;
@@ -83,6 +86,28 @@ class CategoryScreenCubit extends Cubit<CategoryScreenState> {
         for (var element in event) {
           productsList.add(element);
         }
+        emit(GetProductSuccessState());
+      });
+    } on SocketException catch (_) {
+      emit(GetProductErrorState());
+    } catch (_) {
+      emit(GetProductErrorState());
+    }
+  }
+
+  void getNextProductList() async {
+    emit(GetProductLoadingState());
+
+    try {
+      getNextProductsUseCase
+          .execute(productsList[productsList.length - 1].dateOfCreation!)
+          .listen((event) {
+        if (event.isEmpty) {
+          emit(GetProductLoadingState());
+        }
+        print(event);
+
+        productsList.addAll(event);
         emit(GetProductSuccessState());
       });
     } on SocketException catch (_) {

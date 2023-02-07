@@ -53,7 +53,16 @@ class CategoryScreen extends StatelessWidget {
                 const SizedBox(
                   height: 40.0,
                 ),
-                tableWidget()
+                tableWidget(),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextButton(
+                    onPressed: () {
+                      BlocProvider.of<CategoryScreenCubit>(context)
+                          .getNextProductList();
+                    },
+                    child: const Text("more..."))
               ],
             ),
           ),
