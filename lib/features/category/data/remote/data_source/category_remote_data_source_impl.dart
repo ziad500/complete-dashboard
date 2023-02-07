@@ -3,6 +3,9 @@ import 'package:dashboard/features/category/data/model/category_model.dart';
 import 'package:dashboard/features/category/data/remote/data_source/category_remote_data_source.dart';
 import 'package:dashboard/features/category/domain/model/category_entity.dart';
 
+import '../../../../dashboard_screen/data/model/product_model.dart';
+import '../../../../dashboard_screen/domain/model/product_entity.dart';
+
 class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   final FirebaseFirestore firestore;
   CategoryRemoteDataSourceImpl(this.firestore);
@@ -43,6 +46,19 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
       if (category.exists) {
         categoryCollectionRef.doc(categoryId).delete();
       }
+    });
+  }
+
+  @override
+  Stream<List<ProductEntity>> getProduct() {
+    final productCollectionRef = firestore
+        .collection("products")
+        .orderBy('dateOfCreation', descending: true);
+
+    return productCollectionRef.snapshots().map((querySnap) {
+      return querySnap.docs
+          .map((docSnap) => ProductModel.fromSnapshot(docSnap))
+          .toList();
     });
   }
 }

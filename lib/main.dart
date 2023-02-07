@@ -1,6 +1,6 @@
 import 'package:dashboard/features/category/presentation/category_screen/cubit/category_screen_cubit.dart';
-import 'package:dashboard/features/dashboard_screen/dashboard_screen.dart';
-import 'package:dashboard/features/dashboard_screen/dashboard_screen_cubit.dart';
+import 'package:dashboard/features/dashboard_screen/presentation/screen/dashboard_screen.dart';
+import 'package:dashboard/features/dashboard_screen/presentation/cubit/dashboard_screen_cubit.dart';
 import 'package:dashboard/features/main_screen/presentation/cubit/main_screen_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => DashboardMainScreenCubit(),
+            create: (context) => di.sl<DashboardMainScreenCubit>(),
           ),
           BlocProvider(
             create: (context) => di.sl<CategoryScreenCubit>(),
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: DashBoardMainScreen(),
+          home: const DashBoardMainScreen(),
         ));
   }
 }

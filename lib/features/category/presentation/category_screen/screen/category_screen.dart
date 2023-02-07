@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dashboard/features/category/data/model/category_model.dart';
 import 'package:dashboard/features/category/presentation/category_screen/cubit/category_screen_states.dart';
 import 'package:flutter/material.dart';
@@ -371,79 +372,130 @@ class CategoryScreen extends StatelessWidget {
         ],
       );
 
-  Widget tableWidget() => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DataTable(
-              headingRowColor: MaterialStateProperty.resolveWith(
-                  (states) => Colors.grey.shade200),
-              columns: const [
-                DataColumn(label: Text("ID")),
-                DataColumn(label: Text("Product Title")),
-                DataColumn(label: Text("Creation Date")),
-                DataColumn(label: Text("Category")),
-                DataColumn(label: Text("Description")),
-                DataColumn(label: Text("..")),
-              ],
-              rows: [
-                DataRow(cells: [
-                  const DataCell(Text("0")),
-                  const DataCell(Text("How to make Dashboard")),
-                  DataCell(Text(DateTime.now().toString())),
-                  const DataCell(Text("2.3K Views")),
-                  const DataCell(Text("120 Comments")),
-                  DataCell(
-                    DropdownButton(
-                        hint: const Text("more"),
-                        items: const [
-                          DropdownMenuItem(value: "Date", child: Text("Date")),
-                          DropdownMenuItem(
-                              value: "Comments", child: Text("Comments")),
-                          DropdownMenuItem(
-                              value: "Category", child: Text("Category")),
-                        ],
-                        onChanged: (value) {}),
-                  ),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text("1")),
-                  const DataCell(Text("How to make Flutter App")),
-                  DataCell(Text(DateTime.now().toString())),
-                  const DataCell(Text("9.3K Views")),
-                  const DataCell(Text("1K Comments")),
-                  DataCell(
-                    DropdownButton(
-                        hint: const Text("more"),
-                        items: const [
-                          DropdownMenuItem(value: "Date", child: Text("Date")),
-                          DropdownMenuItem(
-                              value: "Comments", child: Text("Comments")),
-                          DropdownMenuItem(
-                              value: "Category", child: Text("Category")),
-                        ],
-                        onChanged: (value) {}),
-                  ),
-                ]),
-                DataRow(cells: [
-                  const DataCell(Text("2")),
-                  const DataCell(Text("How to make Android App")),
-                  DataCell(Text(DateTime.now().toString())),
-                  const DataCell(Text("5.3K Views")),
-                  const DataCell(Text("700 Comments")),
-                  DataCell(
-                    DropdownButton(
-                        hint: const Text("more"),
-                        items: const [
-                          DropdownMenuItem(value: "Date", child: Text("Date")),
-                          DropdownMenuItem(
-                              value: "Comments", child: Text("Comments")),
-                          DropdownMenuItem(
-                              value: "Category", child: Text("Category")),
-                        ],
-                        onChanged: (value) {}),
-                  ),
-                ]),
-              ])
-        ],
-      );
+  Widget tableWidget() => Builder(builder: (context) {
+        BlocProvider.of<CategoryScreenCubit>(context).getProduct();
+        return BlocConsumer<CategoryScreenCubit, CategoryScreenState>(
+            listener: (context, state) {},
+            builder: (context, state) {
+              var productList =
+                  BlocProvider.of<CategoryScreenCubit>(context).productsList;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  DataTable(
+                      headingRowColor: MaterialStateProperty.resolveWith(
+                          (states) => Colors.grey.shade200),
+                      columns: const [
+                        DataColumn(label: Text("ID")),
+                        DataColumn(label: Text("Product Title")),
+                        DataColumn(label: Text("Creation Date")),
+                        DataColumn(label: Text("Category")),
+                        DataColumn(label: Text("Description")),
+                        DataColumn(label: Text("..")),
+                      ],
+                      rows: productList
+                          .map(
+                            (product) => DataRow(cells: [
+                              DataCell(Text(product.productId.toString())),
+                              DataCell(Text(product.productName.toString())),
+                              DataCell(Text(
+                                  product.dateOfCreation!.toDate().toString())),
+                              DataCell(Text(product.category.toString())),
+                              DataCell(Text(
+                                product.description.toString(),
+                                //  style: TextStyle(),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              )),
+                              DataCell(
+                                DropdownButton(
+                                    hint: const Text("more"),
+                                    items: const [
+                                      DropdownMenuItem(
+                                          value: "Date", child: Text("Date")),
+                                      DropdownMenuItem(
+                                          value: "Comments",
+                                          child: Text("Comments")),
+                                      DropdownMenuItem(
+                                          value: "Category",
+                                          child: Text("Category")),
+                                    ],
+                                    onChanged: (value) {}),
+                              ),
+                            ]),
+                          )
+                          .toList()
+                      /*   [
+                        DataRow(cells: [
+                          const DataCell(Text("0")),
+                          const DataCell(Text("How to make Dashboard")),
+                          DataCell(Text(DateTime.now().toString())),
+                          const DataCell(Text("2.3K Views")),
+                          const DataCell(Text("120 Comments")),
+                          DataCell(
+                            DropdownButton(
+                                hint: const Text("more"),
+                                items: const [
+                                  DropdownMenuItem(
+                                      value: "Date", child: Text("Date")),
+                                  DropdownMenuItem(
+                                      value: "Comments",
+                                      child: Text("Comments")),
+                                  DropdownMenuItem(
+                                      value: "Category",
+                                      child: Text("Category")),
+                                ],
+                                onChanged: (value) {}),
+                          ),
+                        ]),
+                        DataRow(cells: [
+                          const DataCell(Text("1")),
+                          const DataCell(Text("How to make Flutter App")),
+                          DataCell(Text(DateTime.now().toString())),
+                          const DataCell(Text("9.3K Views")),
+                          const DataCell(Text("1K Comments")),
+                          DataCell(
+                            DropdownButton(
+                                hint: const Text("more"),
+                                items: const [
+                                  DropdownMenuItem(
+                                      value: "Date", child: Text("Date")),
+                                  DropdownMenuItem(
+                                      value: "Comments",
+                                      child: Text("Comments")),
+                                  DropdownMenuItem(
+                                      value: "Category",
+                                      child: Text("Category")),
+                                ],
+                                onChanged: (value) {}),
+                          ),
+                        ]),
+                        DataRow(cells: [
+                          const DataCell(Text("2")),
+                          const DataCell(Text("How to make Android App")),
+                          DataCell(Text(DateTime.now().toString())),
+                          const DataCell(Text("5.3K Views")),
+                          const DataCell(Text("700 Comments")),
+                          DataCell(
+                            DropdownButton(
+                                hint: const Text("more"),
+                                items: const [
+                                  DropdownMenuItem(
+                                      value: "Date", child: Text("Date")),
+                                  DropdownMenuItem(
+                                      value: "Comments",
+                                      child: Text("Comments")),
+                                  DropdownMenuItem(
+                                      value: "Category",
+                                      child: Text("Category")),
+                                ],
+                                onChanged: (value) {}),
+                          ),
+                        ]),
+                      ] */
+                      )
+                ],
+              );
+            });
+      });
 }

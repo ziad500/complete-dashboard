@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dashboard/features/category/domain/model/category_entity.dart';
 import 'package:dashboard/features/category/domain/usecases/add_category_usecase.dart';
+import 'package:dashboard/features/category/domain/usecases/get_product_usecase.dart';
 import 'package:dashboard/features/main_screen/presentation/cubit/main_screen_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../dashboard_screen/domain/model/product_entity.dart';
 import '../../../domain/usecases/delete_category_usecase.dart';
 import '../../../domain/usecases/get_category_usecase.dart';
 import 'category_screen_states.dart';
@@ -15,12 +17,14 @@ class CategoryScreenCubit extends Cubit<CategoryScreenState> {
   CategoryScreenCubit(
       {required this.getCategoryUseCase,
       required this.addCategoryUseCase,
-      required this.deleteCategoryUseCase})
+      required this.deleteCategoryUseCase,
+      required this.getProductUseCase})
       : super(CategoryScreenInitial());
   // BlocProvider.of<CategoryScreenCubit>(context)
   final AddCategoryUseCase addCategoryUseCase;
   final GetCategoryUseCase getCategoryUseCase;
   final DeleteCategoryUseCase deleteCategoryUseCase;
+  final GetProductUseCase getProductUseCase;
 
   final TextEditingController categoryController = TextEditingController();
   void addCategory() async {
@@ -63,6 +67,26 @@ class CategoryScreenCubit extends Cubit<CategoryScreenState> {
       emit(DeleteCategoryErrorState());
     } catch (_) {
       emit(DeleteCategoryErrorState());
+    }
+  }
+
+  List<ProductEntity> productsList = [];
+  void getProduct() async {
+    emit(GetProductLoadingState());
+
+    try {
+      getProductUseCase.execute().listen((event) {
+        productsList = [];
+        for (var element in event) {
+          productsList.add(element);
+        }
+        print(productsList);
+        emit(GetProductSuccessState());
+      });
+    } on SocketException catch (_) {
+      emit(GetProductErrorState());
+    } catch (_) {
+      emit(GetProductErrorState());
     }
   }
 }
