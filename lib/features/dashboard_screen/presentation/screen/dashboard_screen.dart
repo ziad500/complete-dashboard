@@ -1,3 +1,4 @@
+import 'package:dashboard/features/category/presentation/category_screen/cubit/category_screen_cubit.dart';
 import 'package:dashboard/features/dashboard_screen/presentation/cubit/dashboard_screen_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -53,13 +54,18 @@ class DashBoardMainScreen extends StatelessWidget {
 
   Widget floatingActionButton(context) => FloatingActionButton(
         onPressed: () {
-          showDataAlert(context);
+          if (BlocProvider.of<DashboardMainScreenCubit>(context).currentIndex ==
+              1) {
+            showAddProductAlert(context);
+          }
         },
         backgroundColor: Colors.deepPurple.shade400,
         child: const Icon(Icons.add),
       );
 
-  showDataAlert(context) {
+  showAddProductAlert(context) {
+    var categoryList =
+        BlocProvider.of<CategoryScreenCubit>(context).categoryList;
     showDialog(
         context: context,
         builder: (context) {
@@ -102,18 +108,37 @@ class DashBoardMainScreen extends StatelessWidget {
                             labelText: 'Product Name'),
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller:
-                            BlocProvider.of<DashboardMainScreenCubit>(context)
-                                .categoryController,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Enter Category',
-                            labelText: 'Category'),
-                      ),
-                    ),
+                    BlocConsumer<DashboardMainScreenCubit,
+                            DashboardMainScreenState>(
+                        listener: (context, state) {},
+                        builder: (context, state) {
+                          return Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: DropdownButton(
+                                isExpanded: true,
+                                hint: Text(
+                                    BlocProvider.of<DashboardMainScreenCubit>(
+                                            context)
+                                        .selectedCategory),
+                                items: categoryList
+                                    .map(
+                                      (category) => DropdownMenuItem(
+                                          onTap: () {
+                                            BlocProvider.of<
+                                                        DashboardMainScreenCubit>(
+                                                    context)
+                                                .selectCategory(category
+                                                    .category
+                                                    .toString());
+                                          },
+                                          value: category.category.toString(),
+                                          child: Text(
+                                              category.category.toString())),
+                                    )
+                                    .toList(),
+                                onChanged: (value) {}),
+                          );
+                        }),
                     Container(
                       padding: const EdgeInsets.all(8.0),
                       child: TextField(

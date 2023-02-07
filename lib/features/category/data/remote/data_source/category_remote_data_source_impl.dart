@@ -61,4 +61,15 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
           .toList();
     });
   }
+
+  @override
+  Future<void> deleteProduct(String productId) async {
+    final productCollectionRef = firestore.collection("products");
+
+    productCollectionRef.doc(productId).get().then((product) {
+      if (product.exists) {
+        productCollectionRef.doc(productId).delete();
+      }
+    });
+  }
 }

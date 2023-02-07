@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dashboard/features/category/domain/model/category_entity.dart';
 import 'package:dashboard/features/category/domain/usecases/add_category_usecase.dart';
+import 'package:dashboard/features/category/domain/usecases/delete_product_usecase.dart';
 import 'package:dashboard/features/category/domain/usecases/get_product_usecase.dart';
 import 'package:dashboard/features/main_screen/presentation/cubit/main_screen_cubit.dart';
 import 'package:flutter/material.dart';
@@ -18,13 +19,15 @@ class CategoryScreenCubit extends Cubit<CategoryScreenState> {
       {required this.getCategoryUseCase,
       required this.addCategoryUseCase,
       required this.deleteCategoryUseCase,
-      required this.getProductUseCase})
+      required this.getProductUseCase,
+      required this.deleteProductUseCase})
       : super(CategoryScreenInitial());
   // BlocProvider.of<CategoryScreenCubit>(context)
   final AddCategoryUseCase addCategoryUseCase;
   final GetCategoryUseCase getCategoryUseCase;
   final DeleteCategoryUseCase deleteCategoryUseCase;
   final GetProductUseCase getProductUseCase;
+  final DeleteProductUseCase deleteProductUseCase;
 
   final TextEditingController categoryController = TextEditingController();
   void addCategory() async {
@@ -80,13 +83,22 @@ class CategoryScreenCubit extends Cubit<CategoryScreenState> {
         for (var element in event) {
           productsList.add(element);
         }
-        print(productsList);
         emit(GetProductSuccessState());
       });
     } on SocketException catch (_) {
       emit(GetProductErrorState());
     } catch (_) {
       emit(GetProductErrorState());
+    }
+  }
+
+  void deleteProduct(String productId) async {
+    try {
+      await deleteProductUseCase.execute(productId);
+    } on SocketException catch (_) {
+      emit(DeleteProductErrorState());
+    } catch (_) {
+      emit(DeleteProductErrorState());
     }
   }
 }

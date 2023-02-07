@@ -9,3 +9,5 @@ class SelectSuccess extends DashboardMainScreenState {}
 class AddProductSuccessState extends DashboardMainScreenState {}
 
 class AddProductFaildState extends DashboardMainScreenState {}
+
+class SelectCategoryState extends DashboardMainScreenState {}

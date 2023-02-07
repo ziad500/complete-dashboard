@@ -21,4 +21,8 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
   @override
   Stream<List<ProductEntity>> getProduct() => remoteDataSource.getProduct();
+
+  @override
+  Future<void> deleteProduct(String productId) =>
+      remoteDataSource.deleteProduct(productId);
 }

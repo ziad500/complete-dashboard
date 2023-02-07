@@ -44,10 +44,12 @@ class DashboardMainScreenCubit extends Cubit<DashboardMainScreenState> {
   }
 
   void addProduct() async {
-    if (categoryController.text != "") {
+    if (descriptionController.text != "" &&
+        productNameController.text != "" &&
+        selectedCategory != "Category") {
       try {
         await addProductUseCase.execute(ProductModel(
-            category: categoryController.text,
+            category: selectedCategory,
             description: descriptionController.text,
             image:
                 "https://www.google.com/url?sa=i&url=http%3A%2F%2Farabic.britannicaenglish.com%2Fapple&psig=AOvVaw1E0ftycI6A7HfugYvJapta&ust=1675886478436000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCNDL8uOZhP0CFQAAAAAdAAAAABAE",
@@ -59,7 +61,15 @@ class DashboardMainScreenCubit extends Cubit<DashboardMainScreenState> {
       } catch (_) {
         emit(AddProductFaildState());
       }
-      categoryController.text = "";
+      descriptionController.text = "";
+      productNameController.text = "";
+      selectedCategory = "Category";
     }
+  }
+
+  String selectedCategory = "Category";
+  selectCategory(String value) {
+    selectedCategory = value;
+    emit(SelectCategoryState());
   }
 }

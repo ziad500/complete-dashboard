@@ -7,4 +7,5 @@ abstract class CategoryRepository {
   Stream<List<CategoryEntity>> getCategory();
   Future<void> deleteCategory(String categoryId);
   Stream<List<ProductEntity>> getProduct();
+  Future<void> deleteProduct(String productId);
 }

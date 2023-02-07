@@ -110,7 +110,7 @@ class CategoryScreen extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
                 onPressed: () {
-                  showDetailsAlert(
+                  showCategoryDetailsAlert(
                       context,
                       BlocProvider.of<CategoryScreenCubit>(context)
                           .categoryList[index]
@@ -231,7 +231,8 @@ class CategoryScreen extends StatelessWidget {
         });
   }
 
-  showDetailsAlert(context, String category, String date, String categoryId) {
+  showCategoryDetailsAlert(
+      context, String category, String date, String categoryId) {
     showDialog(
         context: context,
         builder: (context) {
@@ -333,6 +334,168 @@ class CategoryScreen extends StatelessWidget {
         });
   }
 
+  showProductDetailsAlert(context, String product, String date,
+      String productId, String image, String category, String description) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(
+                  20.0,
+                ),
+              ),
+            ),
+            contentPadding: const EdgeInsets.only(top: 30.0, bottom: 10.0),
+            title: const Center(
+              child: Text(
+                "Product Details",
+                style: TextStyle(fontSize: 24.0),
+              ),
+            ),
+            content: Card(
+              elevation: 0.0,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Center(
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(image),
+                        radius: 80,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              "Product ID : ",
+                              style: TextStyle(
+                                  fontSize: 24.0, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              productId,
+                              style: const TextStyle(fontSize: 24.0),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Product Name : ",
+                              style: TextStyle(
+                                  fontSize: 24.0, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              product,
+                              style: const TextStyle(fontSize: 24.0),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Category : ",
+                              style: TextStyle(
+                                  fontSize: 24.0, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              category,
+                              style: const TextStyle(fontSize: 24.0),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Description : ",
+                              style: TextStyle(
+                                  fontSize: 24.0, fontWeight: FontWeight.bold),
+                            ),
+                            Expanded(
+                              child: Text(
+                                description,
+                                style: const TextStyle(fontSize: 24.0),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Date Of Creation : ",
+                              style: TextStyle(
+                                  fontSize: 24.0, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              date,
+                              style: const TextStyle(fontSize: 24.0),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 35,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            width: double.infinity,
+                            height: 60,
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                BlocProvider.of<CategoryScreenCubit>(context)
+                                    .deleteProduct(productId);
+                                Navigator.of(context).pop();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                // fixedSize: Size(250, 50),
+                              ),
+                              child: const Text(
+                                "Delete",
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            width: double.infinity,
+                            height: 60,
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey,
+                                // fixedSize: Size(250, 50),
+                              ),
+                              child: const Text(
+                                "Cancel",
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   Widget filterSection() => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -391,109 +554,43 @@ class CategoryScreen extends StatelessWidget {
                         DataColumn(label: Text("Creation Date")),
                         DataColumn(label: Text("Category")),
                         DataColumn(label: Text("Description")),
-                        DataColumn(label: Text("..")),
+                        DataColumn(label: Text("Details")),
                       ],
                       rows: productList
                           .map(
                             (product) => DataRow(cells: [
-                              DataCell(Text(product.productId.toString())),
+                              DataCell(
+                                  SelectableText(product.productId.toString())),
                               DataCell(Text(product.productName.toString())),
                               DataCell(Text(
                                   product.dateOfCreation!.toDate().toString())),
                               DataCell(Text(product.category.toString())),
-                              DataCell(Text(
-                                product.description.toString(),
-                                //  style: TextStyle(),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              DataCell(SizedBox(
+                                width: 80,
+                                child: Text(
+                                  product.description.toString(),
+                                  //  style: TextStyle(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               )),
-                              DataCell(
-                                DropdownButton(
-                                    hint: const Text("more"),
-                                    items: const [
-                                      DropdownMenuItem(
-                                          value: "Date", child: Text("Date")),
-                                      DropdownMenuItem(
-                                          value: "Comments",
-                                          child: Text("Comments")),
-                                      DropdownMenuItem(
-                                          value: "Category",
-                                          child: Text("Category")),
-                                    ],
-                                    onChanged: (value) {}),
-                              ),
+                              DataCell(IconButton(
+                                  onPressed: () {
+                                    showProductDetailsAlert(
+                                        context,
+                                        product.productName.toString(),
+                                        product.dateOfCreation!
+                                            .toDate()
+                                            .toString(),
+                                        product.productId.toString(),
+                                        product.image.toString(),
+                                        product.category.toString(),
+                                        product.description.toString());
+                                  },
+                                  icon: const Icon(Icons.more_vert_outlined))),
                             ]),
                           )
-                          .toList()
-                      /*   [
-                        DataRow(cells: [
-                          const DataCell(Text("0")),
-                          const DataCell(Text("How to make Dashboard")),
-                          DataCell(Text(DateTime.now().toString())),
-                          const DataCell(Text("2.3K Views")),
-                          const DataCell(Text("120 Comments")),
-                          DataCell(
-                            DropdownButton(
-                                hint: const Text("more"),
-                                items: const [
-                                  DropdownMenuItem(
-                                      value: "Date", child: Text("Date")),
-                                  DropdownMenuItem(
-                                      value: "Comments",
-                                      child: Text("Comments")),
-                                  DropdownMenuItem(
-                                      value: "Category",
-                                      child: Text("Category")),
-                                ],
-                                onChanged: (value) {}),
-                          ),
-                        ]),
-                        DataRow(cells: [
-                          const DataCell(Text("1")),
-                          const DataCell(Text("How to make Flutter App")),
-                          DataCell(Text(DateTime.now().toString())),
-                          const DataCell(Text("9.3K Views")),
-                          const DataCell(Text("1K Comments")),
-                          DataCell(
-                            DropdownButton(
-                                hint: const Text("more"),
-                                items: const [
-                                  DropdownMenuItem(
-                                      value: "Date", child: Text("Date")),
-                                  DropdownMenuItem(
-                                      value: "Comments",
-                                      child: Text("Comments")),
-                                  DropdownMenuItem(
-                                      value: "Category",
-                                      child: Text("Category")),
-                                ],
-                                onChanged: (value) {}),
-                          ),
-                        ]),
-                        DataRow(cells: [
-                          const DataCell(Text("2")),
-                          const DataCell(Text("How to make Android App")),
-                          DataCell(Text(DateTime.now().toString())),
-                          const DataCell(Text("5.3K Views")),
-                          const DataCell(Text("700 Comments")),
-                          DataCell(
-                            DropdownButton(
-                                hint: const Text("more"),
-                                items: const [
-                                  DropdownMenuItem(
-                                      value: "Date", child: Text("Date")),
-                                  DropdownMenuItem(
-                                      value: "Comments",
-                                      child: Text("Comments")),
-                                  DropdownMenuItem(
-                                      value: "Category",
-                                      child: Text("Category")),
-                                ],
-                                onChanged: (value) {}),
-                          ),
-                        ]),
-                      ] */
-                      )
+                          .toList())
                 ],
               );
             });
