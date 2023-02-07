@@ -1,7 +1,7 @@
-import 'package:dashboard/screens/category/presentation/category_screen/cubit/category_screen_cubit.dart';
-import 'package:dashboard/screens/dashboard_screen/dashboard_screen.dart';
-import 'package:dashboard/screens/dashboard_screen/dashboard_screen_cubit.dart';
-import 'package:dashboard/screens/main_screen/presentation/cubit/main_screen_cubit.dart';
+import 'package:dashboard/features/category/presentation/category_screen/cubit/category_screen_cubit.dart';
+import 'package:dashboard/features/dashboard_screen/dashboard_screen.dart';
+import 'package:dashboard/features/dashboard_screen/dashboard_screen_cubit.dart';
+import 'package:dashboard/features/main_screen/presentation/cubit/main_screen_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
