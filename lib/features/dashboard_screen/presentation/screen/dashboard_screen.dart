@@ -27,40 +27,67 @@ class DashBoardMainScreen extends StatelessWidget {
     );
   }
 
-  Widget navigation(context) => NavigationRail(
-        onDestinationSelected: (value) {
-          BlocProvider.of<DashboardMainScreenCubit>(context).selectIndex(value);
-        },
-        extended: BlocProvider.of<DashboardMainScreenCubit>(context).isExpanded,
-        backgroundColor: Colors.deepPurple.shade400,
-        unselectedIconTheme:
-            const IconThemeData(color: Colors.white, opacity: 1),
-        unselectedLabelTextStyle: const TextStyle(color: Colors.white),
-        selectedIconTheme: IconThemeData(color: Colors.deepPurple.shade900),
-        destinations: const [
-          NavigationRailDestination(
-              icon: Icon(Icons.home), label: Text("Home")),
-          NavigationRailDestination(
-              icon: Icon(Icons.category) /*  Icon(Icons.bar_chart) */,
-              label: Text("Category")),
-          NavigationRailDestination(
-              icon: Icon(Icons.person), label: Text("Profile")),
-          NavigationRailDestination(
-              icon: Icon(Icons.settings), label: Text("Settings"))
-        ],
-        selectedIndex:
-            BlocProvider.of<DashboardMainScreenCubit>(context).currentIndex,
+  Widget navigation(context) => Container(
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Color.fromARGB(255, 131, 33, 243),
+            Color.fromARGB(255, 143, 54, 244),
+          ],
+        )),
+        child: NavigationRail(
+          onDestinationSelected: (value) {
+            BlocProvider.of<DashboardMainScreenCubit>(context)
+                .selectIndex(value);
+          },
+          extended:
+              BlocProvider.of<DashboardMainScreenCubit>(context).isExpanded,
+          backgroundColor: // LinearGradient(colors: colors),
+              Colors.transparent,
+          unselectedIconTheme:
+              const IconThemeData(color: Colors.white, opacity: 1),
+          unselectedLabelTextStyle: const TextStyle(color: Colors.white),
+          selectedIconTheme: IconThemeData(color: Colors.deepPurple.shade900),
+          destinations: const [
+            NavigationRailDestination(
+                icon: Icon(Icons.home), label: Text("Home")),
+            NavigationRailDestination(
+                icon: Icon(Icons.category) /*  Icon(Icons.bar_chart) */,
+                label: Text("Category")),
+            NavigationRailDestination(
+                icon: Icon(Icons.person), label: Text("Profile")),
+            NavigationRailDestination(
+                icon: Icon(Icons.settings), label: Text("Settings"))
+          ],
+          selectedIndex:
+              BlocProvider.of<DashboardMainScreenCubit>(context).currentIndex,
+        ),
       );
 
-  Widget floatingActionButton(context) => FloatingActionButton(
-        onPressed: () {
-          if (BlocProvider.of<DashboardMainScreenCubit>(context).currentIndex ==
-              1) {
-            showAddProductAlert(context);
-          }
-        },
-        backgroundColor: Colors.deepPurple.shade400,
-        child: const Icon(Icons.add),
+  Widget floatingActionButton(context) => Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            gradient: const LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                Color.fromARGB(255, 131, 33, 243),
+                Color.fromARGB(255, 143, 54, 244),
+              ],
+            )),
+        child: FloatingActionButton(
+          onPressed: () {
+            if (BlocProvider.of<DashboardMainScreenCubit>(context)
+                    .currentIndex ==
+                1) {
+              showAddProductAlert(context);
+            }
+          },
+          backgroundColor: Colors.transparent,
+          child: const Icon(Icons.add),
+        ),
       );
 
   showAddProductAlert(context) {
