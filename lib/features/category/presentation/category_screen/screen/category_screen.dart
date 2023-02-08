@@ -43,7 +43,7 @@ class CategoryScreen extends StatelessWidget {
                                 .length +
                             1,
                         itemBuilder: (context, index) =>
-                            gridWidget(context, index)),
+                            gridWidget(context, index, state)),
                   );
                 }),
                 const SizedBox(
@@ -54,22 +54,13 @@ class CategoryScreen extends StatelessWidget {
                   height: 40.0,
                 ),
                 tableWidget(),
-                const SizedBox(
-                  height: 10,
-                ),
-                TextButton(
-                    onPressed: () {
-                      BlocProvider.of<CategoryScreenCubit>(context)
-                          .getNextProductList();
-                    },
-                    child: const Text("more..."))
               ],
             ),
           ),
         ),
       );
 
-  Widget gridWidget(context, index) {
+  Widget gridWidget(context, index, state) {
     if (index ==
         BlocProvider.of<CategoryScreenCubit>(context).categoryList.length) {
       return Padding(
@@ -599,7 +590,18 @@ class CategoryScreen extends StatelessWidget {
                                   icon: const Icon(Icons.more_vert_outlined))),
                             ]),
                           )
-                          .toList())
+                          .toList()),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  state is GetProductEmptyState
+                      ? Container()
+                      : TextButton(
+                          onPressed: () {
+                            BlocProvider.of<CategoryScreenCubit>(context)
+                                .getNextProductList();
+                          },
+                          child: const Text("more..."))
                 ],
               );
             });

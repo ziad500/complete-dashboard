@@ -54,7 +54,21 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
     final productCollectionRef = firestore
         .collection("products")
         .orderBy('dateOfCreation', descending: true)
-        .limit(10);
+        .limit(5);
+
+    return productCollectionRef.snapshots().map((querySnap) {
+      return querySnap.docs
+          .map((docSnap) => ProductModel.fromSnapshot(docSnap))
+          .toList();
+    });
+  }
+
+  @override
+  Stream<List<ProductEntity>> getNextProductList(Timestamp date) {
+    final productCollectionRef = firestore
+        .collection("products")
+        .orderBy('dateOfCreation', descending: true)
+        .startAfter([date]).limit(5);
 
     return productCollectionRef.snapshots().map((querySnap) {
       return querySnap.docs
@@ -71,20 +85,6 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
       if (product.exists) {
         productCollectionRef.doc(productId).delete();
       }
-    });
-  }
-
-  @override
-  Stream<List<ProductEntity>> getNextProductList(Timestamp date) {
-    final productCollectionRef = firestore
-        .collection("products")
-        .orderBy('dateOfCreation', descending: true)
-        .startAfter([date]).limit(10);
-
-    return productCollectionRef.snapshots().map((querySnap) {
-      return querySnap.docs
-          .map((docSnap) => ProductModel.fromSnapshot(docSnap))
-          .toList();
     });
   }
 }

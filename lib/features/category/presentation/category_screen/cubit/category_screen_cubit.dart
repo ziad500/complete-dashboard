@@ -95,6 +95,8 @@ class CategoryScreenCubit extends Cubit<CategoryScreenState> {
     }
   }
 
+  //bool enoughData = false;
+
   void getNextProductList() async {
     emit(GetProductLoadingState());
 
@@ -103,12 +105,12 @@ class CategoryScreenCubit extends Cubit<CategoryScreenState> {
           .execute(productsList[productsList.length - 1].dateOfCreation!)
           .listen((event) {
         if (event.isEmpty) {
-          emit(GetProductLoadingState());
+          //enoughData = true;
+          emit(GetProductEmptyState());
+        } else {
+          productsList.addAll(event);
+          emit(GetProductSuccessState());
         }
-        print(event);
-
-        productsList.addAll(event);
-        emit(GetProductSuccessState());
       });
     } on SocketException catch (_) {
       emit(GetProductErrorState());

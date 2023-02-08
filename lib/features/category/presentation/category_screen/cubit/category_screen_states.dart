@@ -16,6 +16,8 @@ class DeleteCategoryErrorState extends CategoryScreenState {}
 
 class GetProductLoadingState extends CategoryScreenState {}
 
+class GetProductEmptyState extends CategoryScreenState {}
+
 class GetProductSuccessState extends CategoryScreenState {}
 
 class GetProductErrorState extends CategoryScreenState {}
